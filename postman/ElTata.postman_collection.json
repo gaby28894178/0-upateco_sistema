@@ -1,0 +1,112 @@
+{
+  "info": {
+    "name": "El Tata - API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "el-tata-api-collection"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Productos - Listar",
+      "request": {"method": "GET", "url": {"raw": "{{base_url}}/productos", "host": ["{{base_url}}"], "path": ["productos"]}}
+    },
+    {
+      "name": "Productos - Crear",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Pizza Especial\",\n  \"description\": \"Muzzarella, jamón, morrones\",\n  \"price\": 2200,\n  \"category\": \"Pizzas\",\n  \"available\": true\n}"
+        },
+        "url": {"raw": "{{base_url}}/productos", "host": ["{{base_url}}"], "path": ["productos"]}
+      }
+    },
+    {
+      "name": "Clientes - Listar",
+      "request": {"method": "GET", "url": {"raw": "{{base_url}}/clientes", "host": ["{{base_url}}"], "path": ["clientes"]}}
+    },
+    {
+      "name": "Clientes - Crear",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"name\": \"Ana García\",\n  \"phone\": \"11-3333-3333\",\n  \"address\": \"\"\n}"},
+        "url": {"raw": "{{base_url}}/clientes", "host": ["{{base_url}}"], "path": ["clientes"]}
+      }
+    },
+    {
+      "name": "Pedidos - Crear",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customer_id\": 1,\n  \"notes\": \"Sin aceitunas\",\n  \"driver_id\": 1,\n  \"items\": [\n    {\"product_id\": 1, \"quantity\": 1},\n    {\"product_id\": 3, \"quantity\": 1}\n  ]\n}"
+        },
+        "url": {"raw": "{{base_url}}/pedidos", "host": ["{{base_url}}"], "path": ["pedidos"]}
+      }
+    },
+    {
+      "name": "Repartidores - Listar",
+      "request": {"method": "GET", "url": {"raw": "{{base_url}}/repartidores", "host": ["{{base_url}}"], "path": ["repartidores"]}}
+    },
+    {
+      "name": "Repartidores - Crear",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"name\": \"Nuevo Repartidor\",\n  \"phone\": \"11-0000-0000\"\n}"},
+        "url": {"raw": "{{base_url}}/repartidores", "host": ["{{base_url}}"], "path": ["repartidores"]}
+      }
+    },
+    {
+      "name": "Pedidos - Asignar Repartidor",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"driver_id\": 1\n}"},
+        "url": {"raw": "{{base_url}}/pedidos/1/asignar", "host": ["{{base_url}}"], "path": ["pedidos","1","asignar"]}
+      }
+    },
+    {
+      "name": "Pedidos - Listar",
+      "request": {"method": "GET", "url": {"raw": "{{base_url}}/pedidos", "host": ["{{base_url}}"], "path": ["pedidos"]}}
+    },
+    {
+      "name": "Pedidos - Detalle",
+      "request": {"method": "GET", "url": {"raw": "{{base_url}}/pedidos/1", "host": ["{{base_url}}"], "path": ["pedidos","1"]}}
+    },
+    {
+      "name": "Pedidos - Ticket",
+      "request": {"method": "GET", "url": {"raw": "{{base_url}}/pedidos/1/ticket", "host": ["{{base_url}}"], "path": ["pedidos","1","ticket"]}}
+    },
+    {
+      "name": "Pedidos - Cambiar Estado a Preparación",
+      "request": {
+        "method": "POST",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {"mode": "raw", "raw": "{\n  \"nuevo_estado\": \"En preparación\"\n}"},
+        "url": {"raw": "{{base_url}}/pedidos/1/estado", "host": ["{{base_url}}"], "path": ["pedidos","1","estado"]}
+      }
+    },
+    {
+      "name": "Reportes - Ventas",
+      "request": {"method": "GET", "url": {"raw": "{{base_url}}/reportes/ventas", "host": ["{{base_url}}"], "path": ["reportes","ventas"]}}
+    }
+  ],
+  "variable": [
+    {"key": "base_url", "value": "http://localhost:8000"}
+  ]
+}

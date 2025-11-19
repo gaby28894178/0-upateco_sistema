@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="480" viewBox="0 0 1024 480">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <style>
+      .node{fill:#111827;stroke:#1f2937;stroke-width:2;rx:16}
+      .title{fill:#e5e7eb;font-family:Segoe UI,Roboto,sans-serif;font-size:16px;font-weight:700}
+      .arrow{stroke:#93c5fd;stroke-width:2;marker-end:url(#m)}
+    </style>
+    <marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#93c5fd" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1024" height="480" fill="url(#bg)"/>
+  <text class="title" x="32" y="40">Flujo de Estados · El Tata</text>
+
+  <rect class="node" x="48" y="96" width="180" height="72"/>
+  <text class="title" x="72" y="140">Pendiente</text>
+
+  <rect class="node" x="300" y="96" width="220" height="72"/>
+  <text class="title" x="324" y="140">En preparación</text>
+
+  <rect class="node" x="592" y="96" width="160" height="72"/>
+  <text class="title" x="616" y="140">Listo</text>
+
+  <rect class="node" x="800" y="96" width="176" height="72"/>
+  <text class="title" x="824" y="140">Entregado</text>
+
+  <rect class="node" x="300" y="240" width="180" height="72"/>
+  <text class="title" x="324" y="284">Cancelado</text>
+
+  <line class="arrow" x1="228" y1="132" x2="300" y2="132"/>
+  <line class="arrow" x1="520" y1="132" x2="592" y2="132"/>
+  <line class="arrow" x1="752" y1="132" x2="800" y2="132"/>
+  <line class="arrow" x1="410" y1="168" x2="390" y2="240"/>
+  <line class="arrow" x1="158" y1="168" x2="390" y2="240"/>
+</svg>

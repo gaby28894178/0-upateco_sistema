@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="640" viewBox="0 0 1024 640">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+    <style>
+      .card{fill:#111827;stroke:#1f2937;stroke-width:2;rx:16}
+      .title{fill:#e5e7eb;font-family:Segoe UI,Roboto,sans-serif;font-size:18px;font-weight:700}
+      .text{fill:#9ca3af;font-family:Segoe UI,Roboto,sans-serif;font-size:14px}
+      .pill{fill:#ef4444;rx:12}
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1024" height="640" fill="url(#bg)"/>
+  <rect class="card" x="48" y="48" width="928" height="544"/>
+  <text class="title" x="72" y="80">Casos de Uso · El Tata</text>
+  <rect class="card" x="72" y="112" width="280" height="120"/>
+  <text class="title" x="92" y="140">Login</text>
+  <text class="text" x="92" y="166">Usuario ingresa credenciales</text>
+
+  <rect class="card" x="384" y="112" width="280" height="120"/>
+  <text class="title" x="404" y="140">Dashboard</text>
+  <text class="text" x="404" y="166">KPIs y accesos rápidos</text>
+
+  <rect class="card" x="696" y="112" width="280" height="120"/>
+  <text class="title" x="716" y="140">Reportes</text>
+  <text class="text" x="716" y="166">Ventas y top productos</text>
+
+  <rect class="card" x="72" y="260" width="440" height="160"/>
+  <text class="title" x="92" y="288">Nuevo Pedido</text>
+  <text class="text" x="92" y="314">Selecciona cliente, agrega ítems y confirma</text>
+
+  <rect class="card" x="536" y="260" width="440" height="160"/>
+  <text class="title" x="556" y="288">Gestión de Estados</text>
+  <text class="text" x="556" y="314">Pendiente → En preparación → Listo → Entregado</text>
+
+  <rect class="card" x="72" y="440" width="440" height="120"/>
+  <text class="title" x="92" y="468">Menú (Productos)</text>
+  <text class="text" x="92" y="494">CRUD de productos y disponibilidad</text>
+
+  <rect class="card" x="536" y="440" width="440" height="120"/>
+  <text class="title" x="556" y="468">Clientes</text>
+  <text class="text" x="556" y="494">CRUD de clientes</text>
+
+  <circle cx="212" cy="112" r="8" fill="#22c55e"/>
+  <circle cx="524" cy="112" r="8" fill="#22c55e"/>
+  <circle cx="836" cy="112" r="8" fill="#22c55e"/>
+  <circle cx="292" cy="260" r="8" fill="#22c55e"/>
+  <circle cx="756" cy="260" r="8" fill="#22c55e"/>
+</svg>
