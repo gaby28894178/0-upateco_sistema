@@ -7,14 +7,14 @@
   <style>
     :root{--bg:#0f172a;--card:#111827;--accent:#ef4444;--ok:#22c55e;--text:#e5e7eb;--muted:#9ca3af}
     *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto;background:linear-gradient(135deg,#0f172a,#1f2937);color:var(--text)}
-    header{display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background:#111827;position:sticky;top:0}
-    header h1{margin:0;font-size:18px;letter-spacing:.5px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111827;position:sticky;top:0}
+    header h1{margin:0;font-size:16px;letter-spacing:.3px}
     .badge{padding:4px 10px;border-radius:999px;background:#1f2937;color:var(--muted);font-size:12px}
     main{width:100%;max-width:100%;margin:0;padding:16px;display:block}
     .card{background:var(--card);border:1px solid #1f2937;border-radius:12px;overflow:hidden}
     .card header{background:transparent;border-bottom:1px solid #1f2937}
     .card header h2{margin:0;font-size:16px}
-    .content{padding:16px}
+    .content{padding:12px}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
     .product{border:1px solid #1f2937;border-radius:10px;padding:12px;background:#0b1220}
     .product h3{margin:0 0 6px;font-size:14px}
@@ -27,14 +27,31 @@
     .item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #1f2937;font-size:14px}
     .total{display:flex;justify-content:space-between;margin-top:8px;font-weight:700}
     .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#1f2937;color:#93c5fd;font-size:12px}
-    footer{max-width:1100px;margin:24px auto;color:var(--muted);padding:0 16px}
+    footer{max-width:1100px;margin:6px auto;color:var(--muted);padding:2px 12px;font-size:11px}
     a{color:#93c5fd;text-decoration:none}
-    .nav{display:flex;gap:8px;align-items:center;justify-content:center;background:#0b1220;border-bottom:1px solid #1f2937;padding:8px}
-    .nav button{background:#1f2937;color:#e5e7eb;border:1px solid #293247}
+    .nav{padding:4px 0}
+    .nav-list{list-style:none;display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin:0;padding:0}
+    .nav-list li a{display:inline-flex;align-items:center;gap:6px;background:#1f2937;color:#e5e7eb;border:1px solid #293247;border-radius:8px;padding:4px 8px;font-weight:600;font-size:12px;text-decoration:none}
+    .nav-list li a.secondary{background:#374151}
+    .nav-list li a:hover{background:#243043;border-color:#3b4a63}
+    .nav-list li a.active{border-color:#ef4444;background:#ef4444;color:#fff}
+    .header-left{display:flex;align-items:center;gap:10px}
     .hidden{display:none}
     .sections{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
     .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
     .kpi{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:12px;text-align:center}
+    .login-box{max-width:380px;margin:24px auto}
+    .row-col{display:grid;grid-template-columns:1fr;gap:10px}
+    .card{display:flex;flex-direction:column}
+    .card .content{flex:1 1 auto;overflow:auto}
+    main{height:calc(100vh - 120px);overflow:auto}
+    .nav-list li a.active{border-color:#ef4444;background:#ef4444;color:#fff}
+    @media (max-width:768px){
+      .content{padding:10px}
+      .row{grid-template-columns:1fr}
+    }
+    #tab-login{max-width:460px;margin:16px auto}
+    #tab-login .content{overflow:visible;padding:16px}
   </style>
   <script>
     const api = (p, opt={})=>{ const t=localStorage.getItem('token'); const headers=Object.assign({},opt.headers||{}); if(t) headers['Authorization']='Bearer '+t; return fetch(p,Object.assign(opt,{headers})).then(r=>r.json()) }
@@ -43,7 +60,8 @@
     let repartidores=[]
     async function init(){
       const health = await api('/health')
-      document.getElementById('status').textContent = health.status==='ok'?'Backend OK':'Sin conexión'
+      const statusEl = document.getElementById('status')
+      if(statusEl) statusEl.textContent = health.status==='ok'?'Backend OK':'Sin conexión'
       productos = await api('/productos')
       clientes = await api('/clientes')
       repartidores = await api('/repartidores')
@@ -124,13 +142,43 @@
       const t=document.getElementById('k_total'); const p=document.getElementById('k_pedidos'); const m=document.getElementById('k_promedio'); if(t) t.textContent=fmt(data.total_ventas); if(p) p.textContent=data.pedidos; if(m) m.textContent=fmt(data.promedio_ticket)
       const top=document.getElementById('rep-top'); if(top){ top.innerHTML=''; data.top_productos.forEach(tp=>{ const el=document.createElement('div'); el.className='item'; el.innerHTML=`<span>${tp.producto}</span><span>${tp.cantidad}</span>`; top.appendChild(el) }) }
     }
-    async function doLogin(){
-      const u=document.getElementById('luser').value.trim()
-      const p=document.getElementById('lpass').value.trim()
-      if(!u||!p) return alert('Completa usuario y contraseña')
-      const res=await fetch('/auth/login', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p})})
-      if(res.ok){ const r=await res.json(); localStorage.setItem('token', r.token); const b=document.getElementById('userBadge'); if(b) b.textContent=`Usuario: ${r.username} (${r.role})`; const lb=document.getElementById('loginBtn'); if(lb) lb.textContent='Perfil'; alert('Login ok') } else { alert('Login inválido') }
-    }
+async function doLogin(){
+  const u=document.getElementById('luser').value.trim()
+  const p=document.getElementById('lpass').value.trim()
+  if(!u||!p) return alert('Completa usuario y contraseña')
+  try{
+    const r=await api('/auth/login', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p})})
+    if(r && r.token){ localStorage.setItem('token', r.token); const b=document.getElementById('userBadge'); if(b) b.textContent=`Usuario: ${r.username} (${r.role})`; const lb=document.getElementById('loginBtn'); if(lb) lb.textContent='Perfil'; updateAuthButtons(); showTab('pedido'); alert('Login ok') } else { alert('Login inválido') }
+  } catch(e){ alert('Login inválido') }
+}
+
+async function doRegister(){
+  const u=document.getElementById('luser').value.trim()
+  const p=document.getElementById('lpass').value.trim()
+  if(!u||!p) return alert('Completa usuario y contraseña')
+  try{
+    const r=await api('/auth/register', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p})})
+    if(r && r.token){ localStorage.setItem('token', r.token); const b=document.getElementById('userBadge'); if(b) b.textContent=`Usuario: ${r.username} (${r.role})`; const lb=document.getElementById('loginBtn'); if(lb) lb.textContent='Perfil'; updateAuthButtons(); showTab('pedido'); alert('Registro ok') } else { alert('Registro inválido') }
+  } catch(e){ alert('Registro inválido') }
+}
+function updateAuthButtons(){
+  const hasToken=!!localStorage.getItem('token')
+  const lb=document.getElementById('loginBtn')
+  const lo=document.getElementById('logoutBtn')
+  if(lb) lb.textContent = hasToken? 'Perfil':'Login'
+  if(lo) lo.style.display = hasToken? 'inline-block':'none'
+}
+
+async function doLogout(){
+  const t=localStorage.getItem('token')
+  if(t){
+    try{ await api('/auth/logout', {method:'POST'}) } catch(e){}
+  }
+  localStorage.removeItem('token')
+  const b=document.getElementById('userBadge'); if(b) b.textContent=''
+  updateAuthButtons()
+  showTab('login')
+}
     function renderProductosMini(){
       const c=document.getElementById('productos-mini'); if(!c) return; c.innerHTML=''
       productos.forEach(p=>{
@@ -152,33 +200,41 @@
       cont.appendChild(ul)
       const cc=document.getElementById('clientes-count'); if(cc) cc.textContent=String(clientes.length)
     }
-    function showTab(name){
-      const tabs=['menu','pedido','clientes','reportes','login']
-      tabs.forEach(t=>{ const el=document.getElementById('tab-'+t); if(el){ el.style.display = (t===name)?'block':'none' } })
-      if(name==='clientes') renderClientesList()
-    }
+function showTab(name){
+  const tabs=['menu','pedido','clientes','reportes','login']
+  const hasToken = !!localStorage.getItem('token')
+  if(name!=='login' && !hasToken) name='login'
+  tabs.forEach(t=>{ const el=document.getElementById('tab-'+t); if(el){ el.style.display = (t===name)?'block':'none' } })
+  if(name==='clientes') renderClientesList()
+  document.querySelectorAll('.nav [data-tab]').forEach(b=>{ b.classList.toggle('active', b.getAttribute('data-tab')===name) })
+}
     async function refreshData(){
       productos = await api('/productos')
       clientes = await api('/clientes')
       renderProductos(); renderClientes(); renderClientesList(); renderCarrito(); renderRepartidores()
     }
-    window.addEventListener('DOMContentLoaded', async ()=>{ await init(); showTab('pedido'); renderProductosMini(); const btn=document.getElementById('btn-ticket'); if(btn) btn.disabled=true })
+window.addEventListener('DOMContentLoaded', async ()=>{ await init(); const hasToken=!!localStorage.getItem('token'); showTab(hasToken? 'pedido':'login'); renderProductosMini(); const btn=document.getElementById('btn-ticket'); if(btn) btn.disabled=true; updateAuthButtons() })
   </script>
   </head>
 <body>
   <header>
-    <h1>🍕 El Tata · POS</h1>
-    <span class="badge">Backend: <span id="status">…</span></span>
+    <div class="header-left">
+      <h1>🍕 El Tata · POS</h1>
+      <nav class="nav">
+        <ul class="nav-list">
+          <li><a href="#" data-tab="pedido" onclick="showTab('pedido')">🧾 Nuevo Pedido</a></li>
+          <li><a href="#" data-tab="menu" onclick="showTab('menu')">🍽️ Menú</a></li>
+          <li><a href="#" data-tab="clientes" onclick="showTab('clientes')">👥 Clientes</a></li>
+          <li><a href="#" data-tab="reportes" onclick="showTab('reportes')">📊 Reportes</a></li>
+          <li><a href="#" data-tab="login" class="secondary" onclick="showTab('login')" id="loginBtn">👤 Perfil</a></li>
+          <li><a href="#" class="secondary" onclick="doLogout()" id="logoutBtn" style="display:none">🚪 Logout</a></li>
+          <li><a class="pill" href="/docs" target="_blank">📘 Docs API</a></li>
+          <li><a href="#" class="secondary" onclick="refreshData()">🔄 Actualizar</a></li>
+        </ul>
+      </nav>
+    </div>
+    
   </header>
-  <div class="nav">
-    <button onclick="showTab('pedido')">Nuevo Pedido</button>
-    <button onclick="showTab('menu')">Menú</button>
-    <button onclick="showTab('clientes')">Clientes</button>
-    <button onclick="showTab('reportes')">Reportes</button>
-    <button class="secondary" onclick="showTab('login')" id="loginBtn">Login</button>
-    <a class="pill" href="/docs" target="_blank">Docs API</a>
-    <button class="secondary" onclick="refreshData()">Actualizar</button>
-  </div>
   <main>
     <section class="card hidden" id="tab-menu">
       <header><h2>Menú</h2></header>
@@ -245,12 +301,17 @@
     <section class="card hidden" id="tab-login">
       <header><h2>Login</h2></header>
       <div class="content">
-        <div class="row">
-          <div><input id="luser" placeholder="Usuario"></div>
-          <div><input id="lpass" type="password" placeholder="Contraseña"></div>
+        <div class="login-box">
+          <div class="row-col">
+            <input id="luser" placeholder="Usuario">
+            <input id="lpass" type="password" placeholder="Contraseña">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;justify-content:center">
+            <button onclick="doLogin()">Ingresar</button>
+            <button class="secondary" onclick="doRegister()">Registrarse</button>
+          </div>
+          <div class="pill" id="userBadge" style="margin-top:8px;text-align:center"></div>
         </div>
-        <div style="margin-top:8px"><button onclick="doLogin()">Ingresar</button></div>
-        <div class="pill" id="userBadge" style="margin-top:8px"></div>
       </div>
     </section>
     <section class="card" id="tab-pedido">

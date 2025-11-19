@@ -78,6 +78,9 @@ stateDiagram-v2
 - `GET /pedidos?status=` | `GET /pedidos/{id}` (detalle con totales) | `POST /pedidos` (items) | `PUT /pedidos/{id}` (notas) | `POST /pedidos/{id}/estado` | `DELETE /pedidos/{id}`
 - `GET /reportes/ventas?desde=&hasta=`
 - `POST /auth/login` (autenticación básica; usuario seed `admin`/`admin`)
+- `POST /auth/register` (alta de usuario)
+- `POST /auth/logout` (cierre de sesión)
+- `GET /auth/me` (validación del token y rol)
 - `GET /pedidos/{id}/ticket` (ticket imprimible)
 
 ## Formatos de Datos
@@ -154,6 +157,9 @@ Período, KPIs, top productos, gráficos, exportación PDF
 - Respuesta: `token`, `username`, `role`.
 - Seed: usuario `admin` contraseña `admin`.
 - Uso en frontend: guarda token y muestra badge de usuario.
+- Registro: `POST /auth/register` devuelve token y rol inicial.
+- Logout: `POST /auth/logout` invalida el token actual.
+- Validación: `GET /auth/me` mantiene sesión y controla navegación.
 
 ## Reportes diarios
 - Pestaña “Reportes” en frontend.
@@ -172,3 +178,11 @@ Período, KPIs, top productos, gráficos, exportación PDF
 - Notificaciones (SMS/email) en cambio de estado.
 - Exportación de reportes a PDF.
 - UI admin y POS (tablet) con los wireframes anteriores.
+## Interfaz y Navegación
+- Navbar junto al título en el header, con estado activo por pestaña.
+- Redirección automática a “Login” si no hay sesión.
+- Login en card centrado con ancho estándar para mejorar legibilidad.
+- Vistas con tarjetas y scroll interno para acomodar contenido en el viewport.
+- Navbar optimizado en HTML semántico (`nav > ul > li > a`) y estilo compacto.
+- Iconos en navegación para mejorar reconocimiento rápido de acciones.
+- Footer minimal con tipografía reducida para maximizar espacio útil.

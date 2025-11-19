@@ -177,3 +177,33 @@ def create_token(user_id: int, days: int = 1) -> str:
     conn.commit()
     conn.close()
     return token
+
+
+def validate_token(token: str):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT a.token, a.expires_at, u.id as user_id, u.username, u.role FROM auth_tokens a JOIN users u ON u.id = a.user_id WHERE a.token=?",
+        (token,),
+    )
+    row = cur.fetchone()
+    conn.close()
+    if not row:
+        return None
+    try:
+        exp = datetime.fromisoformat(row["expires_at"]).timestamp()
+    except Exception:
+        return None
+    if exp < datetime.utcnow().timestamp():
+        return None
+    return {"id": row["user_id"], "username": row["username"], "role": row["role"]}
+
+
+def revoke_token(token: str) -> bool:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM auth_tokens WHERE token=?", (token,))
+    changed = cur.rowcount > 0
+    conn.commit()
+    conn.close()
+    return changed
