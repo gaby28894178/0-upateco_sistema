@@ -1,0 +1,17 @@
+Repositorio: 0-upateco_sistema
+Remote origin: https://github.com/gaby28894178/0-upateco_sistema.git
+Rama principal: GrupalPrincipal
+Último commit: 66ac950 — docs: actualizar SRS y README; navbar ul/li, login centrado, footer mínimo
+
+URLs
+Frontend: http://127.0.0.1:8000/web
+API Docs: http://127.0.0.1:8000/docs
+SRS PDF: http://127.0.0.1:8000/docs/srs.pdf
+
+Rutas clave
+/auth/login
+/auth/register
+/auth/logout
+/auth/me
+/reportes/ventas
+/pedidos/{id}/ticket
