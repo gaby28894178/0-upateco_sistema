@@ -178,11 +178,313 @@ Período, KPIs, top productos, gráficos, exportación PDF
 - Notificaciones (SMS/email) en cambio de estado.
 - Exportación de reportes a PDF.
 - UI admin y POS (tablet) con los wireframes anteriores.
-## Interfaz y Navegación
-- Navbar junto al título en el header, con estado activo por pestaña.
+## ESPECIFICACIÓN DE REQUISITOS DEL SOFTWARE (SRS) — SISTEMA "EL TATA"
+
+### Diagramas de Casos de Uso
+
+Diagrama General (visual)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    SISTEMA GESTIÓN PEDIDOS                  │
+└─────────────────────────────────────────────────────────────┘
+            ▲                          ▲                  ▲
+            │                          │                  │
+    ┌───────┼──────────────────────────┼──────────────────┼───────┐
+    │       │                          │                  │       │
+    ▼       ▼                          ▼                  ▼       ▼
+
+[Administrador]                 [Empleado]              [Cliente]
+    👨‍💼                         👨‍🍳                     👤
+    │                            │                        │
+    ├─ Gestionar Menú            ├─ Registrar Pedido      ├─ Recibir Notificación
+    ├─ Generar Reportes          ├─ Modificar Pedido      └─ Consultar Estado
+    └─ Administrar Usuarios      └─ Cancelar Pedido
+```
+
+Actores y Casos de Uso (detallado)
+
+```
+┌─────────────────────────────────────────┐
+│             ADMINISTRADOR               │
+├─────────────────────────────────────────┤
+│ • Gestionar Menú Principal              │
+│ • Generar Reportes de Ventas            │
+│ • Administrar Usuarios del Sistema      │
+│ • Configurar Parámetros del Sistema     │
+└─────────────────────────────────────────┘
+
+📝 GESTIONAR MENÚ
+├── Agregar nuevo producto
+├── Modificar producto existente
+├── Eliminar producto
+├── Actualizar precios
+└── Categorizar productos
+
+┌─────────────────────────────────────────┐
+│               EMPLEADO                  │
+├─────────────────────────────────────────┤
+│ • Registrar Nuevos Pedidos              │
+│ • Modificar Pedidos Existentes          │
+│ • Cancelar Pedidos                      │
+│ • Consultar Estado de Pedidos           │
+│ • Calcular Totales Automáticos          │
+└─────────────────────────────────────────┘
+
+📋 REGISTRAR PEDIDO
+├── Ingresar datos del cliente
+├── Seleccionar productos del menú
+├── Agregar observaciones especiales
+├── Aplicar descuentos (si corresponde)
+├── Calcular total automáticamente
+└── Confirmar pedido
+
+┌─────────────────────────────────────────┐
+│                CLIENTE                  │
+├─────────────────────────────────────────┤
+│ • Recibir Notificaciones                │
+│ • Consultar Estado del Pedido           │
+│ • Realizar Consultas                    │
+└─────────────────────────────────────────┘
+```
+
+### Requisitos Funcionales (visual)
+
+Alta prioridad
+
+```
+🟥 RF-01: REGISTRO DE PEDIDOS
+   └── 📝 Datos: Cliente + Productos + Observaciones
+
+🟥 RF-02: MODIFICACIÓN/CANCELACIÓN
+   └── ⚡ Antes del envío
+
+🟥 RF-04: CÁLCULO AUTOMÁTICO
+   └── 🧮 Total = Precios + Descuentos
+```
+
+Media prioridad
+
+```
+🟨 RF-03: GESTIÓN DE MENÚ
+   └── ➕ Agregar / ✏️ Modificar / ❌ Eliminar
+
+🟨 RF-05: REPORTES DE VENTAS
+   └── 📊 Diarios • Semanales • Mensuales
+```
+
+Baja prioridad
+
+```
+🟩 RF-06: NOTIFICACIONES CLIENTE
+   └── 🔔 Pedido listo • 📦 En camino
+```
+
+### Requisitos No Funcionales (visual)
+
+Alta prioridad
+
+```
+🟥 RNF-01: USABILIDAD
+   └── 🎯 Interfaz intuitiva y fácil de usar
+
+🟥 RNF-02: RENDIMIENTO
+   └── ⏱️ Registro pedido < 5 segundos
+
+🟥 RNF-03: SEGURIDAD
+   └── 🔒 Datos almacenados cifrados
+```
+
+Media prioridad
+
+```
+🟨 RNF-04: DISPONIBILIDAD
+   └── 📈 95% del tiempo operativo
+
+🟨 RNF-05: ESCALABILIDAD
+   └── 📊 Hasta 100 pedidos diarios
+```
+
+Baja prioridad
+
+```
+🟩 RNF-06: COMPATIBILIDAD
+   └── 🌐 Chrome • Firefox • Edge
+```
+
+### Flujo del Proceso de Pedidos
+
+```
+┌─────────────┐    ┌──────────────┐    ┌──────────────┐    ┌─────────────┐
+│   CLIENTE   │───▶│   EMPLEADO   │───▶│  SISTEMA     │───▶│ADMINISTRADOR│
+│             │    │              │    │              │    │             │
+│ Realiza     │    │ Registra     │    │ Calcula      │    │ Genera      │
+│ pedido      │    │ pedido       │    │ total        │    │ reportes    │
+└─────────────┘    └──────────────┘    └──────────────┘    └─────────────┘
+                         │                    │                    │
+                         ▼                    ▼                    ▼
+                 ┌──────────────┐    ┌──────────────┐    ┌─────────────┐
+                 │ Notificación │◀───│ Procesamiento│───▶│ Gestión     │
+                 │ al cliente   │    │ del pedido   │    │ del menú    │
+                 └──────────────┘    └──────────────┘    └─────────────┘
+```
+
+### Criterios de Validación
+
+```
+✅ VALIDACIÓN POR PRIORIDAD
+├── 🔴 ALTA: Pruebas unitarias + Pruebas de integración
+├── 🟡 MEDIA: Pruebas de aceptación + Prototipos
+└── 🟢 BAJA: Revisión con el cliente + Casos de prueba
+```
+
+### Resumen Ejecutivo Visual
+
+```
+SISTEMA "EL TATA" - GESTIÓN DE PEDIDOS
+├── 👥 3 ACTORES PRINCIPALES
+├── 📋 6 REQUISITOS FUNCIONALES
+├── 🛡️ 6 REQUISITOS NO FUNCIONALES
+├── 🎯 3 NIVELES DE PRIORIDAD
+└── 🔄 1 PROCESO UNIFICADO
+```
+
+### Diagramas en código dbdiagram (para pegar fácilmente)
+
+Casos de uso modelados (representación conceptual)
+
+```
+Table administrador {
+  id int [pk]
+  nombre varchar
+  email varchar
+  fecha_creacion timestamp
+}
+
+Table empleado {
+  id int [pk]
+  nombre varchar
+  rol varchar
+  activo boolean
+}
+
+Table cliente {
+  id int [pk]
+  nombre varchar
+  telefono varchar
+  email varchar
+}
+
+Table casos_uso {
+  id int [pk]
+  actor varchar
+  caso_uso varchar
+  descripcion text
+}
+
+Table gestion_menu {
+  id int [pk]
+  administrador_id int
+  accion varchar
+  fecha timestamp
+}
+
+Table pedido_cu {
+  id int [pk]
+  empleado_id int
+  cliente_id int
+  accion varchar
+  fecha timestamp
+}
+
+Table notificacion {
+  id int [pk]
+  cliente_id int
+  tipo varchar
+  mensaje text
+  fecha timestamp
+}
+
+Table reporte_ventas {
+  id int [pk]
+  administrador_id int
+  tipo varchar
+  periodo varchar
+  total decimal
+  fecha timestamp
+}
+
+Ref: gestion_menu.administrador_id > administrador.id
+Ref: pedido_cu.empleado_id > empleado.id
+Ref: pedido_cu.cliente_id > cliente.id
+Ref: notificacion.cliente_id > cliente.id
+Ref: reporte_ventas.administrador_id > administrador.id
+```
+
+Modelo de datos real del sistema
+
+```
+Table productos {
+  id int [pk]
+  name varchar
+  price decimal
+  category varchar
+  available boolean
+}
+
+Table clientes {
+  id int [pk]
+  name varchar
+  phone varchar
+  address varchar
+}
+
+Table repartidores {
+  id int [pk]
+  name varchar
+  phone varchar
+}
+
+Table pedidos {
+  id int [pk]
+  customer_id int
+  driver_id int
+  status varchar
+  notes text
+  total decimal
+  created_at timestamp
+}
+
+Table order_items {
+  id int [pk]
+  order_id int
+  product_id int
+  quantity int
+  unit_price decimal
+}
+
+Table users {
+  id int [pk]
+  username varchar [unique]
+  password_hash varchar
+  role varchar
+}
+
+Table auth_tokens {
+  token varchar [pk]
+  user_id int
+  expires_at timestamp
+}
+
+Ref: pedidos.customer_id > clientes.id
+Ref: pedidos.driver_id > repartidores.id
+Ref: order_items.order_id > pedidos.id
+Ref: order_items.product_id > productos.id
+Ref: auth_tokens.user_id > users.id
+```
+
+### Interfaz y Navegación
+- Navbar junto al título en el header, con estado activo por pestaña y estilo compacto.
 - Redirección automática a “Login” si no hay sesión.
-- Login en card centrado con ancho estándar para mejorar legibilidad.
+- Login en card centrado con ancho estándar; footer minimal para maximizar espacio útil.
 - Vistas con tarjetas y scroll interno para acomodar contenido en el viewport.
-- Navbar optimizado en HTML semántico (`nav > ul > li > a`) y estilo compacto.
-- Iconos en navegación para mejorar reconocimiento rápido de acciones.
-- Footer minimal con tipografía reducida para maximizar espacio útil.
