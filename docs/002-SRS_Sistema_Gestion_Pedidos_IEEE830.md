@@ -180,6 +180,32 @@ Período, KPIs, top productos, gráficos, exportación PDF
 - UI admin y POS (tablet) con los wireframes anteriores.
 ## ESPECIFICACIÓN DE REQUISITOS DEL SOFTWARE (SRS) — SISTEMA "EL TATA"
 
+### 1. Propósito
+- Documentar de forma clara y verificable los requisitos del sistema "El Tata" para la gestión de pedidos, abarcando funcionalidades, datos, interfaces, flujos y criterios de validación.
+
+### 2. Alcance
+- Gestión integral de pedidos de un local gastronómico: menú, clientes, pedidos, repartidores, reportes y notificaciones.
+- Usuario objetivo: administradores y empleados del local; consulta de estado por clientes.
+
+### 3. Definiciones y Acrónimos
+- Pedido: conjunto de ítems seleccionados por el cliente con total calculado.
+- Ítem: producto del menú con cantidad y precio unitario.
+- RF/RNF: Requisitos Funcionales / No Funcionales.
+- KPI: indicador clave de desempeño (tiempo de registro, disponibilidad, errores).
+
+### 4. Referencias
+- API Docs: `http://127.0.0.1:8000/docs`
+- Frontend: `http://127.0.0.1:8000/web`
+- Repositorio: `https://github.com/gaby28894178/0-upateco_sistema`
+
+### 5. Visión General del Producto
+- El sistema centraliza el registro y gestión de pedidos, con cálculo automático, control de estado y métricas de ventas. Ofrece una UI tipo POS con tabs, login y roles.
+
+### 6. Actores y Características
+- Administrador: gestiona menú, usuarios y reportes.
+- Empleado: registra y modifica pedidos, cancela antes del envío.
+- Cliente: consulta estado y recibe notificaciones.
+
 ### Diagramas de Casos de Uso
 
 Diagrama General (visual)
@@ -280,6 +306,15 @@ Baja prioridad
    └── 🔔 Pedido listo • 📦 En camino
 ```
 
+Listado detallado
+
+- RF-01 Registro de pedidos: cliente, productos, observaciones, totales.
+- RF-02 Modificación/Cancelación: permitido antes del estado "Enviado/Entregado".
+- RF-03 Gestión de menú: alta, baja, modificación, categorías y disponibilidad.
+- RF-04 Cálculo automático: subtotal, descuentos, total por ítems.
+- RF-05 Reportes de ventas: por fecha, KPIs de total, cantidad y promedio.
+- RF-06 Notificaciones al cliente: pedido listo, en camino.
+
 ### Requisitos No Funcionales (visual)
 
 Alta prioridad
@@ -312,6 +347,15 @@ Baja prioridad
    └── 🌐 Chrome • Firefox • Edge
 ```
 
+Listado detallado
+
+- RNF-01 Usabilidad: interfaz clara, navegación consistente y responsive.
+- RNF-02 Rendimiento: registrar pedido < 5 segundos en condiciones normales.
+- RNF-03 Seguridad: contraseñas hash; tokens con expiración.
+- RNF-04 Disponibilidad: 95% operativo en horario comercial.
+- RNF-05 Escalabilidad: hasta 100 pedidos diarios sin degradación significativa.
+- RNF-06 Compatibilidad: Chrome/Firefox/Edge actuales.
+
 ### Flujo del Proceso de Pedidos
 
 ```
@@ -329,6 +373,12 @@ Baja prioridad
                  └──────────────┘    └──────────────┘    └─────────────┘
 ```
 
+Narrativa
+
+- El cliente realiza el pedido; el empleado registra ítems y observaciones.
+- El sistema calcula totales y persiste el pedido; se asigna repartidor si aplica.
+- El administrador consulta reportes y ajusta el menú según métricas.
+
 ### Criterios de Validación
 
 ```
@@ -337,6 +387,12 @@ Baja prioridad
 ├── 🟡 MEDIA: Pruebas de aceptación + Prototipos
 └── 🟢 BAJA: Revisión con el cliente + Casos de prueba
 ```
+
+Aceptación
+
+- Alta prioridad: pruebas unitarias e integración deben pasar con >90% cobertura en módulos críticos.
+- Media prioridad: pruebas de aceptación con escenarios de usuario y prototipos validados.
+- Baja prioridad: revisión con el cliente y casos de prueba manuales documentados.
 
 ### Resumen Ejecutivo Visual
 
@@ -348,6 +404,12 @@ SISTEMA "EL TATA" - GESTIÓN DE PEDIDOS
 ├── 🎯 3 NIVELES DE PRIORIDAD
 └── 🔄 1 PROCESO UNIFICADO
 ```
+
+Indicadores
+
+- Tiempo de registro: objetivo < 5s.
+- Tasa de errores: < 1% en operaciones diarias.
+- Disponibilidad: ≥ 95% en horario de atención.
 
 ### Diagramas en código dbdiagram (para pegar fácilmente)
 
@@ -483,8 +545,127 @@ Ref: order_items.product_id > productos.id
 Ref: auth_tokens.user_id > users.id
 ```
 
+### 7. Diccionario de Datos
+- `productos`: catálogo del menú.
+  - `id` (int), `name` (varchar), `price` (decimal), `category` (varchar), `available` (bool).
+- `clientes`: datos del cliente.
+  - `id` (int), `name` (varchar), `phone` (varchar), `address` (varchar).
+- `repartidores`: asignación logística.
+  - `id` (int), `name` (varchar), `phone` (varchar).
+- `pedidos`: entidad principal.
+  - `id` (int), `customer_id` (FK), `driver_id` (FK), `status` (varchar), `notes` (text), `total` (decimal), `created_at` (timestamp).
+- `order_items`: ítems del pedido.
+  - `id` (int), `order_id` (FK), `product_id` (FK), `quantity` (int), `unit_price` (decimal).
+- `users`: autenticación.
+  - `id` (int), `username` (varchar, único), `password_hash` (varchar), `role` (varchar).
+- `auth_tokens`: sesión.
+  - `token` (pk), `user_id` (FK), `expires_at` (timestamp).
+
+### 8. Estados del Pedido
+- `pendiente` → `preparando` → `listo` → `en_camino` → `entregado`.
+- Cancelación permitida en `pendiente` y `preparando`.
+
+### 9. API (Resumen y Ejemplos)
+- `POST /auth/login`
+  - Request: `{ "username": "caja1", "password": "***" }`
+  - Response: `{ "token": "...", "user": { "id": 1, "role": "empleado" } }`
+- `GET /productos`
+  - Response: `[ { "id": 10, "name": "Empanada", "price": 700.0, "category": "comida", "available": true } ]`
+- `POST /pedidos`
+  - Request: `{ "customer_id": 3, "items": [ { "product_id": 10, "quantity": 6 } ], "notes": "sin sal" }`
+  - Response: `{ "id": 120, "status": "pendiente", "total": 4200.0 }`
+- `POST /pedidos/{id}/estado`
+  - Request: `{ "status": "preparando" }`
+  - Response: `{ "id": 120, "status": "preparando" }`
+- `GET /reportes/ventas?desde=&hasta=`
+  - Response: `{ "total": 152000.0, "count": 87, "avg": 1747.1 }`
+
+### 10. Roles y Permisos
+- Administrador: CRUD de menú y usuarios; reportes; configuración.
+- Empleado: CRUD de pedidos (con restricciones de estado); consulta de productos/clientes.
+- Cliente: consulta estado y notificaciones.
+
+### 11. Suposiciones y Dependencias
+- Persistencia SQLite; backend FastAPI; tokens Bearer; frontend POS con tabs.
+- Compatibilidad con navegadores modernos.
+
+### 12. Riesgos y Mitigaciones
+- Pico de carga: colas de trabajo y cache; límites de concurrencia.
+- Seguridad de datos: hash de contraseñas, expiración de tokens, evitar logs sensibles.
+- UX en móviles: layout responsive, navbar compacto.
+
+### 13. Trazabilidad (RF → Datos/Endpoints)
+- RF-01 → `pedidos`, `order_items` • `/pedidos`.
+- RF-02 → `pedidos.status` • `/pedidos/{id}/estado`, `DELETE /pedidos/{id}`.
+- RF-03 → `productos` • `/productos` CRUD.
+- RF-04 → `order_items.unit_price`, `pedidos.total` • lógica de cálculo.
+- RF-05 → `reporte_ventas` • `/reportes/ventas`.
+- RF-06 → `notificacion` • evento de estado.
+
+### 14. Interfaz y Navegación
+- Navbar junto al título en el header, con estado activo por pestaña y estilo compacto.
+- Redirección automática a “Login” si no hay sesión.
+- Login en card centrado; footer minimal para maximizar espacio útil.
+- Vistas con tarjetas y scroll interno para acomodar contenido en el viewport.
+
+### API (Resumen)
+- `GET /health` estado del backend.
+- `GET /productos`, `POST /productos`, `PUT /productos/{id}`, `DELETE /productos/{id}`.
+- `GET /clientes`, `POST /clientes`, `PUT /clientes/{id}`, `DELETE /clientes/{id}`.
+- `GET /repartidores`.
+- `GET /pedidos`, `POST /pedidos`, `GET /pedidos/{id}`, `POST /pedidos/{id}/estado`, `DELETE /pedidos/{id}`.
+- `GET /reportes/ventas?desde=&hasta=`.
+- `POST /auth/login`, `POST /auth/register`, `POST /auth/logout`, `GET /auth/me`.
+- `GET /pedidos/{id}/ticket`.
+
+### Roles y Permisos
+- Administrador: gestionar menú, usuarios y reportes.
+- Empleado: registrar, modificar y cancelar pedidos.
+- Cliente: consultar estado y recibir notificaciones.
+
+### Suposiciones y Dependencias
+- Persistencia SQLite; despliegue en FastAPI.
+- Autenticación por token tipo Bearer.
+- Frontend POS con tabs y login obligatorio.
+
+### Riesgos y Mitigaciones
+- Riesgo: saturación en horario pico → Mitigación: limitar llamadas concurrentes y cache de listas.
+- Riesgo: datos sensibles → Mitigación: hash de contraseñas y expiración de tokens.
+- Riesgo: UX en móviles → Mitigación: layout responsive y navbar compacto.
+
 ### Interfaz y Navegación
 - Navbar junto al título en el header, con estado activo por pestaña y estilo compacto.
 - Redirección automática a “Login” si no hay sesión.
 - Login en card centrado con ancho estándar; footer minimal para maximizar espacio útil.
 - Vistas con tarjetas y scroll interno para acomodar contenido en el viewport.
+Listado detallado
+
+- RF-01 Registro de pedidos: cliente, productos, observaciones, totales.
+- RF-02 Modificación/Cancelación: permitido antes del estado "Enviado/Entregado".
+- RF-03 Gestión de menú: alta, baja, modificación, categorías y disponibilidad.
+- RF-04 Cálculo automático: subtotal, descuentos, total por ítems.
+- RF-05 Reportes de ventas: por fecha, KPIs de total, cantidad y promedio.
+- RF-06 Notificaciones al cliente: pedido listo, en camino.
+Listado detallado
+
+- RNF-01 Usabilidad: interfaz clara, navegación consistente y responsive.
+- RNF-02 Rendimiento: registrar pedido < 5 segundos en condiciones normales.
+- RNF-03 Seguridad: contraseñas hash; tokens con expiración.
+- RNF-04 Disponibilidad: 95% operativo en horario comercial.
+- RNF-05 Escalabilidad: hasta 100 pedidos diarios sin degradación significativa.
+- RNF-06 Compatibilidad: Chrome/Firefox/Edge actuales.
+Narrativa
+
+- El cliente realiza el pedido; el empleado registra ítems y observaciones.
+- El sistema calcula totales y persiste el pedido; se asigna repartidor si aplica.
+- El administrador consulta reportes y ajusta el menú según métricas.
+Aceptación
+
+- Alta prioridad: pruebas unitarias e integración deben pasar con >90% cobertura en módulos críticos.
+- Media prioridad: pruebas de aceptación con escenarios de usuario y prototipos validados.
+- Baja prioridad: revisión con el cliente y casos de prueba manuales documentados.
+Indicadores
+
+- Tiempo de registro: objetivo < 5s.
+- Tasa de errores: < 1% en operaciones diarias.
+- Disponibilidad: ≥ 95% en horario de atención.
